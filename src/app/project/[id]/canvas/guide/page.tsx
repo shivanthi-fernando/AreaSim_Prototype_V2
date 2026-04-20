@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, ChevronLeft, Sparkles } from "lucide-react";
+import { X, ArrowRight, ChevronLeft } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
 // ─── Per-step animated illustrations — UNCHANGED ──────────────────────────────
@@ -39,12 +39,12 @@ function IllustrationWelcome() {
         </motion.text>
       ))}
       {[{ x: 60, y: 30 }, { x: 270, y: 25 }, { x: 155, y: 155 }].map((s, i) => (
-        <motion.g key={i}
-          animate={{ scale: [0, 1.2, 0], rotate: [0, 180, 360] }}
+        <motion.text key={i} x={s.x} y={s.y} textAnchor="middle" fontSize="12" fill="#00C9A7"
+          animate={{ scale: [0, 1.2, 0], rotate: [0, 180, 360], opacity: [0, 1, 0] }}
           transition={{ duration: 1.5, delay: 2 + i * 0.3, repeat: Infinity, repeatDelay: 2 }}
           style={{ transformOrigin: `${s.x}px ${s.y}px` }}>
-          <Sparkles size={14} color="#00C9A7" x={s.x - 7} y={s.y - 7} />
-        </motion.g>
+          ✦
+        </motion.text>
       ))}
     </svg>
   );
@@ -182,108 +182,6 @@ function IllustrationSingleZone() {
         transition={{ duration: 3, ease: "linear", repeat: Infinity, repeatDelay: 0.5 }}>
         <circle cx="78" cy="154" r="5" fill="#8B5CF6" opacity="0.7" />
       </motion.g>
-    </svg>
-  );
-}
-
-function IllustrationDetailPanel() {
-  return (
-    <svg viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      <rect x="20" y="20" width="200" height="145" rx="4" fill="#EEF3F8" />
-      <rect x="30" y="32" width="85" height="65" rx="4" fill="rgba(10,79,110,0.1)" stroke="#0A4F6E" strokeWidth="1" />
-      <rect x="130" y="32" width="82" height="65" rx="4" fill="rgba(0,201,167,0.1)" stroke="#00C9A7" strokeWidth="1" />
-      <rect x="30" y="108" width="182" height="45" rx="4" fill="rgba(139,92,246,0.08)" stroke="#8B5CF6" strokeWidth="1" strokeDasharray="4 3" />
-      <motion.rect x="216" y="20" width="90" height="145" rx="4"
-        fill="white" stroke="#D0DDE6" strokeWidth="1"
-        style={{ filter: "drop-shadow(-4px 0 12px rgba(10,79,110,0.08))" }}
-        initial={{ x: 320 }} animate={{ x: 216 }}
-        transition={{ delay: 0.3, duration: 0.5, type: "spring", stiffness: 180, repeat: Infinity, repeatDelay: 2 }} />
-      {[
-        { y: 38, indent: 0, color: "#374151", text: "▸ Ground Floor" },
-        { y: 54, indent: 8, color: "#1A7FA8", text: "⊙ Meeting Zone" },
-        { y: 68, indent: 16, color: "#374151", text: "● Conf A" },
-        { y: 82, indent: 16, color: "#374151", text: "● Conf B" },
-        { y: 96, indent: 8, color: "#8B5CF6", text: "⊙ Focus Area" },
-        { y: 110, indent: 16, color: "#00C9A7", text: "✓ Focus 1" },
-        { y: 124, indent: 16, color: "#374151", text: "● Focus 2" },
-        { y: 142, indent: 0, color: "#6B7280", text: "▸ Floor 2" },
-      ].map((item, i) => (
-        <motion.text key={i} x={220 + item.indent} y={item.y} fontSize="7.5"
-          fill={item.color} fontWeight={item.indent === 0 ? "600" : "400"}
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 + i * 0.1, repeat: Infinity, repeatDelay: 2 }}>
-          {item.text}
-        </motion.text>
-      ))}
-    </svg>
-  );
-}
-
-function IllustrationScore() {
-  return (
-    <svg viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      <rect x="75" y="30" width="170" height="120" rx="12" fill="white" stroke="#D0DDE6" strokeWidth="1.5"
-        style={{ filter: "drop-shadow(0 4px 16px rgba(10,79,110,0.1))" }} />
-      <text x="160" y="52" textAnchor="middle" fontSize="10" fill="#8CA3B0" fontWeight="600">AreaSim Score</text>
-      <motion.text x="160" y="95" textAnchor="middle" fontSize="38" fill="#0D1B2A" fontWeight="800"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-        <animate attributeName="textContent" values="00;12;24;36;48;62;74;82;91;96" dur="3s" repeatCount="indefinite" />
-        96
-      </motion.text>
-      <text x="160" y="110" textAnchor="middle" fontSize="9" fill="#00C9A7" fontWeight="600">Excellent</text>
-      <rect x="95" y="120" width="130" height="8" rx="4" fill="#EEF3F8" />
-      <motion.rect x="95" y="120" width="0" height="8" rx="4" fill="url(#scoreGrad)"
-        animate={{ width: 125 }}
-        transition={{ delay: 0.5, duration: 1.5, ease: "easeOut", repeat: Infinity, repeatDelay: 1 }} />
-      <defs>
-        <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#1A7FA8" />
-          <stop offset="100%" stopColor="#00C9A7" />
-        </linearGradient>
-      </defs>
-      {[{ x: 55, y: 60 }, { x: 268, y: 55 }, { x: 260, y: 140 }, { x: 55, y: 145 }].map((s, i) => (
-        <motion.text key={i} x={s.x} y={s.y} textAnchor="middle" fontSize="16"
-          animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5], rotate: [0, 20, 0] }}
-          transition={{ delay: 1 + i * 0.3, duration: 1, repeat: Infinity, repeatDelay: 1.5 }}>
-          ⭐
-        </motion.text>
-      ))}
-    </svg>
-  );
-}
-
-function IllustrationReady() {
-  const particles = Array.from({ length: 18 }, (_, i) => ({
-    angle: (i * 360) / 18,
-    r: 50 + (i % 3) * 20,
-    color: ["#00C9A7", "#1A7FA8", "#8B5CF6", "#F59E0B", "#EF4444"][i % 5],
-    size: 4 + (i % 3) * 3,
-  }));
-  return (
-    <svg viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      {particles.map((p, i) => {
-        const rad = (p.angle * Math.PI) / 180;
-        const x = 160 + Math.cos(rad) * p.r;
-        const y = 95 + Math.sin(rad) * p.r;
-        return (
-          <motion.rect key={i} x={x - p.size/2} y={y - p.size/2}
-            width={p.size} height={p.size} rx={p.size / 4} fill={p.color}
-            initial={{ x: 160 - p.size/2, y: 95 - p.size/2, opacity: 0, scale: 0 }}
-            animate={{ x: x - p.size/2, y: y - p.size/2, opacity: [0, 1, 1, 0], scale: [0, 1.2, 1, 0], rotate: [0, 90, 180] }}
-            transition={{ delay: i * 0.06, duration: 1.5, repeat: Infinity, repeatDelay: 1.5 }} />
-        );
-      })}
-      <motion.circle cx="160" cy="95" r="45" fill="white" stroke="#00C9A7" strokeWidth="2.5"
-        animate={{ scale: [0.8, 1, 0.95, 1] }} transition={{ duration: 2, repeat: Infinity }} />
-      <motion.g
-        initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.2 }}
-        style={{ transformOrigin: "160px 88px" }}>
-        <circle cx="160" cy="84" r="14" fill="#00C9A7" />
-        <path d="M153 84 L158 89 L167 79" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      </motion.g>
-      <text x="160" y="109" textAnchor="middle" fontSize="9.5" fill="#0D1B2A" fontWeight="700">You&apos;re Ready!</text>
-      <text x="160" y="121" textAnchor="middle" fontSize="8" fill="#8CA3B0">Start analysing</text>
     </svg>
   );
 }

@@ -30,7 +30,7 @@ interface AppLayoutProps {
   breadcrumbs?: { label: string; href?: string }[];
 }
 
-export function AppLayout({ children, breadcrumbs = [] }: AppLayoutProps) {
+export function AppLayout({ children }: AppLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
