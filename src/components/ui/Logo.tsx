@@ -26,8 +26,8 @@ export function Logo({ size = "md", showText = true, className }: LogoProps) {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <rect width="40" height="40" rx="10" fill="url(#logo-gradient)" />
-        <g transform="translate(2, 3) scale(0.357)">
+        <rect width="40" height="40" rx="20" fill="url(#logo-gradient)" />
+        <g transform="translate(5, 6) scale(0.297)">
           <path d="M47.5 2.59998L11.2 63.5H17.4L4.6 85.7H6.3H6.6H7.3H13.3L22.6 69.1H20.6L12.3 84H7.6L19.4 63.5H66L65.2 61.8H20.4L47.4 14.9L87 84H72.6L74 81.2H82.2L50.9 26.9L50.1 28.9L79.2 79.5H72.9L69.8 85.7H90L47.4 11.4L18.4 61.8H14.3L47.5 5.99997L94.8 88.6H7.3H5H3L2 90.3H97.8L47.5 2.59998Z" fill="white" />
         </g>
         <defs>

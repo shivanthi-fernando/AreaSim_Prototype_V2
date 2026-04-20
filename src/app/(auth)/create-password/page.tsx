@@ -41,7 +41,7 @@ export default function CreatePasswordPage() {
     await new Promise((r) => setTimeout(r, 800));
     // Reset onboarding to step 0 every time a user completes account creation
     resetOnboarding();
-    router.push("/onboarding");
+    router.push("/welcome");
   };
 
   return (
