@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, CheckCircle2, Plus, Minus, Info, ChevronDown, ChevronUp, Lock } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Plus, Minus, Info, ChevronDown, ChevronUp, Lock, LayoutDashboard } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useCanvasStore } from "@/store/canvas";
 import { mockCountHistory } from "@/lib/mockData";
@@ -539,9 +539,18 @@ function CountScreen({
       {/* Header */}
       <header className="sticky top-0 z-20 bg-white border-b border-[#E5EAF0] shadow-sm">
         <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3.5">
-          <button onClick={onBack} className="flex items-center gap-1.5 text-[#5C7A8A] hover:text-[#0D1B2A] transition-colors text-sm font-medium">
-            <ArrowLeft size={16} /> Change Setup
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={onBack} className="flex items-center gap-1.5 text-[#5C7A8A] hover:text-[#0D1B2A] transition-colors text-sm font-medium">
+              <ArrowLeft size={16} /> Change Setup
+            </button>
+            <div className="w-px h-4 bg-[#E5EAF0]" />
+            <button
+              onClick={() => router.push(`/project/${projectId}/floor/${floor?.id ?? "floor-1"}`)}
+              className="flex items-center gap-1.5 text-[#5C7A8A] hover:text-primary transition-colors text-sm font-medium"
+            >
+              <LayoutDashboard size={15} /> Back to Canvas
+            </button>
+          </div>
           <div className="text-center">
             <p className="text-[11px] uppercase tracking-widest text-[#8CA3B0]">Counting</p>
             <p className="text-sm font-semibold text-[#0D1B2A] mt-0.5" style={{ fontFamily: "var(--font-manrope)" }}>

@@ -51,7 +51,7 @@ export const useCanvasStore = create<CanvasState>()(
       activeFloorId: mockProject.floors[0].id,
       activeTool: "select",
       selectedRoomIds: [],
-      detailPanelOpen: false,
+      detailPanelOpen: true,
       surveyModalOpen: false,
       completionModalOpen: false,
       totalRooms: 0,

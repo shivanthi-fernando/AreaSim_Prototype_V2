@@ -197,20 +197,20 @@ export default function WelcomePage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F0F7FF] to-[#E8F4F0] flex flex-col">
+    <div className="h-screen bg-gradient-to-br from-[#F0F7FF] to-[#E8F4F0] flex flex-col overflow-hidden">
 
       {/* ── Top bar ── */}
-      <header className="sticky top-0 z-30 bg-transparent px-8 py-4 flex items-center">
+      <header className="shrink-0 bg-transparent px-8 py-3 flex items-center">
         <Logo size="md" />
       </header>
 
       {/* ── Hero heading ── */}
-      <div className="text-center pt-10 pb-8 px-4">
+      <div className="text-center pt-2 pb-3 px-4 shrink-0">
         <motion.h1
           initial={{ opacity: 0, y: -18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
-          className="text-4xl sm:text-5xl font-bold text-[#0D1B2A] tracking-tight"
+          className="text-3xl sm:text-4xl font-bold text-[#0D1B2A] tracking-tight"
           style={{ fontFamily: "var(--font-manrope)", fontWeight: 800 }}
         >
           See the difference AreaSim makes
@@ -219,21 +219,21 @@ export default function WelcomePage() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.12, ease: [0.4, 0, 0.2, 1] }}
-          className="mt-3 text-lg text-[#4A6579] font-body max-w-xl mx-auto"
+          className="mt-2 text-base text-[#4A6579] font-body max-w-xl mx-auto"
         >
           Here&apos;s what workspace management looks like before and after.
         </motion.p>
       </div>
 
       {/* ── Before / After split ── */}
-      <div className="flex-1 flex flex-col lg:flex-row items-stretch gap-4 px-6 lg:px-12 pb-4 max-w-7xl mx-auto w-full">
+      <div className="flex-1 flex flex-col lg:flex-row items-stretch gap-3 px-6 lg:px-12 max-w-7xl mx-auto w-full min-h-0">
 
         {/* LEFT — Before */}
         <motion.div
           initial={{ opacity: 0, x: -60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.65, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-          className="flex-1 bg-red-50/60 border border-red-100 rounded-2xl flex flex-col items-center justify-between p-8 gap-6 min-h-[420px]"
+          className="flex-1 bg-red-50/60 border border-red-100 rounded-2xl flex flex-col items-center justify-between pt-5 px-5 pb-8 gap-3 overflow-hidden"
         >
           {/* Heading */}
           <h2
@@ -246,7 +246,7 @@ export default function WelcomePage() {
           {/* Stressed team circle */}
           <div className="flex flex-col items-center gap-3">
             <div
-              className="w-[120px] h-[120px] rounded-full border-2 border-dashed border-gray-400 flex items-center justify-center"
+              className="w-[90px] h-[90px] rounded-full border-2 border-dashed border-gray-400 flex items-center justify-center"
               style={{ background: "rgba(254,226,226,0.35)" }}
             >
               <span className="text-4xl select-none">😩</span>
@@ -255,7 +255,7 @@ export default function WelcomePage() {
           </div>
 
           {/* Clipboard illustration */}
-          <div className="w-full max-w-[200px] h-[180px]">
+          <div className="w-full max-w-[130px] h-[110px]">
             <ClipboardIllustration />
           </div>
 
@@ -304,7 +304,7 @@ export default function WelcomePage() {
           initial={{ opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.65, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-          className="flex-1 bg-emerald-50/60 border border-emerald-100 rounded-2xl flex flex-col items-center justify-between p-8 gap-6 min-h-[420px]"
+          className="flex-1 bg-emerald-50/60 border border-emerald-100 rounded-2xl flex flex-col items-center justify-between pt-5 px-5 pb-8 gap-3 overflow-hidden"
         >
           {/* Heading */}
           <h2
@@ -315,7 +315,7 @@ export default function WelcomePage() {
           </h2>
 
           {/* Canvas illustration */}
-          <div className="w-full max-w-[220px] h-[180px]">
+          <div className="w-full max-w-[150px] h-[110px]">
             <AreaSimCanvasIllustration />
           </div>
 
@@ -339,7 +339,7 @@ export default function WelcomePage() {
               </motion.span>
             ))}
             <div
-              className="w-[120px] h-[120px] rounded-full border-2 border-green-400 flex items-center justify-center relative"
+              className="w-[90px] h-[90px] rounded-full border-2 border-green-400 flex items-center justify-center relative"
               style={{ background: "rgba(209,250,229,0.45)" }}
             >
               <span className="text-4xl select-none">😄</span>
@@ -354,25 +354,33 @@ export default function WelcomePage() {
         </motion.div>
       </div>
 
-      {/* ── Bottom CTA ── */}
-      <div className="flex flex-col items-center gap-3 py-10 px-4">
-        <motion.button
-          initial={{ opacity: 0, y: 16 }}
+      {/* ── Message + CTA ── */}
+      <div className="shrink-0 flex flex-col items-center gap-4 py-5 px-4">
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.55, duration: 0.5 }}
+          transition={{ delay: 0.45, duration: 0.45 }}
+          className="text-sm text-[#4A6579] font-body max-w-2xl text-center leading-relaxed"
+        >
+          With manual processes it&apos;s very time consuming. With AreaSim you do things fast using this webapp and save time with better satisfaction.{" "}
+          <span className="font-semibold text-[#0A4F6E]">We&apos;ll guide you step by step to get started easily.</span>
+        </motion.p>
+        <motion.button
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55, duration: 0.45 }}
           whileHover={{ scale: 1.04, y: -2 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => router.push("/onboarding")}
-          className="flex items-center gap-2 rounded-2xl px-10 py-4 text-lg font-semibold text-white shadow-xl transition-all"
+          className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all"
           style={{
-            background: "linear-gradient(135deg, #0A4F6E 0%, #1A7FA8 100%)",
-            boxShadow: "0 8px 32px rgba(10,79,110,0.28)",
+            background: "var(--color-primary)",
+            boxShadow: "0 4px 16px rgba(10,79,110,0.25)",
             fontFamily: "var(--font-manrope)",
-            fontWeight: 700,
           }}
         >
           Let&apos;s Get Started
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
             <path d="M4 10h12M10 4l6 6-6 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </motion.button>
@@ -380,7 +388,7 @@ export default function WelcomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7 }}
-          className="text-sm text-[#6B8A9A] font-body"
+          className="text-xs text-[#6B8A9A] font-body"
         >
           Takes less than 3 minutes to set up
         </motion.p>

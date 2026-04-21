@@ -16,7 +16,7 @@ const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard",    href: "/dashboard" },
   { icon: FolderOpen,      label: "Projects",     href: "/project" },
   { icon: ClipboardList,   label: "Surveys",      href: "/surveys" },
-  { icon: Users,           label: "Team Members", href: "/team" },
+  { icon: Users,           label: "Members",      href: "/team" },
 ];
 
 const MOCK_NOTIFICATIONS = [
@@ -54,7 +54,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="w-px h-6 bg-border mx-1 hidden md:block" />
 
         {/* Nav tabs */}
-        <nav className="hidden md:flex items-center gap-0.5 flex-1">
+        <nav className="hidden md:flex items-stretch gap-0 flex-1 self-stretch">
           {NAV_ITEMS.map(({ icon: Icon, label, href }) => {
             const active = pathname === href || pathname.startsWith(href + "/");
             return (
@@ -62,10 +62,10 @@ export function AppLayout({ children }: AppLayoutProps) {
                 key={href}
                 href={href}
                 className={cn(
-                  "flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium font-body transition-all",
+                  "relative flex items-center gap-2 px-4 text-sm font-medium font-body transition-all border-b-2",
                   active
-                    ? "bg-primary text-white shadow-sm shadow-primary/25"
-                    : "text-text-muted hover:bg-surface-2 hover:text-text"
+                    ? "text-primary border-primary"
+                    : "text-text-muted border-transparent hover:text-text hover:border-border"
                 )}
               >
                 <Icon size={15} />

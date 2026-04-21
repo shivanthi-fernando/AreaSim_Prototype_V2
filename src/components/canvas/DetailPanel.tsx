@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, Plus, CheckCircle2, Loader2, Circle,
-  Pencil, Play, ChevronRight, Sparkles,
+  Pencil, ChevronRight, Sparkles,
 } from "lucide-react";
 import { useCanvasStore } from "@/store/canvas";
 import { useRouter, useParams } from "next/navigation";
@@ -238,13 +238,12 @@ export function DetailPanel({ floorId: _initialFloorId }: DetailPanelProps) {
                   className="flex items-center justify-between px-3 py-2.5 border-b border-[#F0F4F8] last:border-0 bg-white hover:bg-[#F7F9FC] transition-colors">
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-2 h-2 rounded-full border-2 border-dashed border-[#C0D0DC] shrink-0" />
-                    <span className="text-xs text-[#5C7A8A] font-body truncate">{dr.name}</span>
+                    <span className="text-xs text-[#374151] font-body truncate">{dr.name}</span>
                   </div>
                   <button
                     onClick={() => handleCountDetected(dr.id, dr.name)}
-                    className="shrink-0 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold bg-[#F0F6FB] text-[#5C7A8A] hover:bg-primary hover:text-white transition-all"
+                    className="shrink-0 px-2 py-1 rounded-lg text-[10px] font-semibold bg-[#F0F6FB] text-[#5C7A8A] hover:bg-primary hover:text-white transition-all"
                   >
-                    <Play size={9} className="fill-current" />
                     Count
                   </button>
                 </div>
@@ -336,13 +335,12 @@ function RoomRow({
         <button
           onClick={onCount}
           title="Start counting"
-          className={`shrink-0 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-all ${
+          className={`shrink-0 px-2 py-1 rounded-lg text-[10px] font-semibold transition-all ${
             status === "counted"
               ? "bg-accent/10 text-accent"
               : "bg-[#F0F6FB] text-[#5C7A8A] hover:bg-primary hover:text-white"
           }`}
         >
-          <Play size={9} className="fill-current" />
           {status === "counted" ? "Recount" : "Count"}
         </button>
       </div>
