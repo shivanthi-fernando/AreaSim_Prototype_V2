@@ -15,7 +15,7 @@ interface StepIndicatorProps {
 }
 
 /** Multi-step wizard progress indicator with labels. */
-export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
+export function StepIndicator({ steps, currentStep, onStepClick }: StepIndicatorProps) {
   return (
     <div className="w-full">
       {/* Mobile: progress bar */}

@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { X, Phone, Mail } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { StepIndicator } from "@/components/ui/StepIndicator";
 import { Step1Project } from "@/components/onboarding/Step1Project";
@@ -8,7 +11,108 @@ import { Step3Lease } from "@/components/onboarding/Step3Lease";
 import { Step3FloorPlans } from "@/components/onboarding/Step3FloorPlans";
 import { Step6Done } from "@/components/onboarding/Step6Done";
 import { useOnboardingStore } from "@/store/onboarding";
-import { Button } from "@/components/ui/Button";
+
+// ─── Consultant Modal ─────────────────────────────────────────────────────────
+const CONSULTANTS = [
+  {
+    name: "Håvard Røyne",
+    title: "CEO & Partner",
+    bio: "Extensive management and project leadership experience from Gjensidige NOR, OBOS Basale, Aberdeen Standard Investment, and Statsbygg.",
+    phone: "+47 90 09 01 70",
+    email: "havard@areasim.no",
+    photo: "https://areasim.ai/images/team/haavard.jpg",
+  },
+  {
+    name: "Mads Dyrseth",
+    title: "COO & Partner",
+    bio: "One of Norway's foremost analysts on government leases, with expertise in financial analysis, consulting, and commercial property from Statsbygg and SVV.",
+    phone: "+47 97 40 78 49",
+    email: "mads@areasim.no",
+    photo: "https://areasim.ai/images/team/mads.jpg",
+  },
+];
+
+function ConsultantModal({ onClose, onDashboard }: { onClose: () => void; onDashboard: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <motion.div
+        initial={{ scale: 0.94, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.94, opacity: 0, y: 16 }}
+        transition={{ type: "spring", stiffness: 280, damping: 24 }}
+        className="w-full max-w-xl bg-surface rounded-3xl border border-border shadow-2xl overflow-hidden"
+      >
+        {/* Header — white, no gradient */}
+        <div className="relative px-6 pt-6 pb-5 border-b border-border">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 w-7 h-7 rounded-full bg-surface-2 flex items-center justify-center text-text-muted hover:bg-border transition-colors"
+          >
+            <X size={14} />
+          </button>
+          <h2 className="text-xl font-extrabold text-text" style={{ fontFamily: "var(--font-manrope)" }}>
+            Contact our consultants
+          </h2>
+          <p className="text-sm text-text-muted font-body mt-1">
+            Our experts will guide you on how to proceed without a floor plan.
+          </p>
+        </div>
+
+        {/* Consultants */}
+        <div className="px-6 py-5 space-y-4 max-h-[65vh] overflow-y-auto">
+          {CONSULTANTS.map((c) => (
+            <div
+              key={c.email}
+              className="flex gap-4 p-4 rounded-2xl border border-border bg-surface hover:border-primary/20 hover:shadow-card transition-all"
+            >
+              <div className="shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={c.photo}
+                  alt={c.name}
+                  className="w-16 h-16 rounded-2xl object-cover bg-surface-2"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-text" style={{ fontFamily: "var(--font-manrope)" }}>{c.name}</p>
+                <p className="text-xs text-accent font-semibold font-body mb-1">{c.title}</p>
+                <p className="text-xs text-text-muted font-body leading-relaxed mb-3">{c.bio}</p>
+                <div className="flex flex-wrap gap-2">
+                  <a href={`tel:${c.phone}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-primary/5 hover:text-primary text-xs font-medium text-text-muted transition-colors border border-border">
+                    <Phone size={12} /> {c.phone}
+                  </a>
+                  <a href={`mailto:${c.email}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-light text-xs font-medium transition-colors">
+                    <Mail size={12} /> {c.email}
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Dashboard redirect */}
+          <div className="pt-2 border-t border-border space-y-3">
+            <p className="text-xs text-text-muted font-body text-center">
+              Already contacted our team? You can continue to your dashboard.
+            </p>
+            <button
+              onClick={onDashboard}
+              className="mx-auto flex items-center gap-2 px-5 py-2 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-light transition-colors font-body"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 const STEPS = [
   { label: "Create project", description: "Tell us about your project" },
@@ -58,41 +162,6 @@ function IlluStep1() {
   );
 }
 
-function IlluStep2() {
-  const floors = ["Ground Floor", "1st Floor", "2nd Floor"];
-  return (
-    <svg viewBox="0 0 300 260" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full max-h-60">
-      {floors.map((name, i) => (
-        <motion.g key={i}
-          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: i * 0.18 + 0.1 }}>
-          <rect x="50" y={185 - i * 56} width="200" height="44" rx="6"
-            fill="white" stroke="#CBD5E1" strokeWidth="1.5" />
-          <rect x="56" y={190 - i * 56} width="26" height="14" rx="7"
-            fill={["#DBEAFE", "#EDE9FE", "#DCFCE7"][i]} />
-          <text x="69" y={200 - i * 56} textAnchor="middle" fontSize="7.5"
-            fill={["#1D4ED8", "#7C3AED", "#15803D"][i]} fontWeight="700">
-            {["G", "1F", "2F"][i]}
-          </text>
-          <text x="95" y={200 - i * 56} fontSize="9.5" fill="#374151" fontWeight="600">{name}</text>
-          {[120, 145, 165, 185, 205].map((x, j) => (
-            <rect key={j} x={x} y={192 - i * 56} width={16} height={10} rx="2"
-              fill={["#EFF6FF", "#F5F3FF", "#F0FDF4"][i]} stroke="#E2E8F0" strokeWidth="0.8" />
-          ))}
-        </motion.g>
-      ))}
-      <motion.line x1="150" y1="73" x2="150" y2="182" stroke="#CBD5E1" strokeWidth="1.5" strokeDasharray="4 3"
-        initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.6, duration: 0.5 }} />
-      <motion.rect x="118" y="220" width="64" height="20" rx="10" fill="#1A7FA8"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} />
-      <motion.text x="150" y="233" textAnchor="middle" fontSize="8.5" fill="white" fontWeight="600"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-        + Add floors
-      </motion.text>
-    </svg>
-  );
-}
-
 function IlluStep3() {
   return (
     <svg viewBox="0 0 300 260" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full max-h-60">
@@ -121,86 +190,6 @@ function IlluStep3() {
           <stop offset="0%" stopColor="#1A7FA8" /><stop offset="100%" stopColor="#0F7663" />
         </linearGradient>
       </defs>
-    </svg>
-  );
-}
-
-function IlluStep4() {
-  return (
-    <svg viewBox="0 0 300 260" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full max-h-60">
-      <motion.rect x="50" y="30" width="200" height="140" rx="12"
-        fill="white" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="6 4"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} />
-      <motion.rect x="70" y="50" width="160" height="100" rx="6" fill="#EFF6FF"
-        initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.3, type: "spring" }} style={{ transformOrigin: "150px 100px" }} />
-      {[
-        { d: "M 90 70 L 190 70 L 190 140 L 90 140 Z" },
-        { d: "M 130 70 L 130 140" },
-        { d: "M 90 105 L 130 105" },
-      ].map((p, i) => (
-        <motion.path key={i} d={p.d} stroke="#93C5FD" strokeWidth="1.5" fill="none"
-          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-          transition={{ delay: 0.5 + i * 0.2, duration: 0.4 }} />
-      ))}
-      <motion.rect x="70" y="50" width="160" height="4" rx="2" fill="#0F7663" opacity="0.7"
-        animate={{ y: [50, 144, 50] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }} />
-      <motion.g initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-        <circle cx="150" cy="190" r="18" fill="#EFF6FF" stroke="#BFDBFE" strokeWidth="1.5" />
-      </motion.g>
-      <motion.text x="150" y="222" textAnchor="middle" fontSize="10" fill="#374151" fontWeight="600"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-        Drop your floor plan here
-      </motion.text>
-      <motion.text x="150" y="238" textAnchor="middle" fontSize="8.5" fill="#94A3B8"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
-        PNG · JPG · SVG · PDF supported
-      </motion.text>
-      <motion.rect x="108" y="244" width="84" height="14" rx="7" fill="#0A4F6E"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} />
-      <motion.text x="150" y="254" textAnchor="middle" fontSize="7.5" fill="white" fontWeight="600"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }}>
-        ✦ AI analyses your plan
-      </motion.text>
-    </svg>
-  );
-}
-
-function IlluStep5() {
-  const rooms = [
-    { name: "Conference A", x: 70,  y: 55,  w: 80, h: 55, verified: true },
-    { name: "Open Office",  x: 158, y: 55,  w: 80, h: 55, verified: true },
-    { name: "Break Room",   x: 70,  y: 118, w: 80, h: 55, verified: false },
-    { name: "Reception",    x: 158, y: 118, w: 80, h: 55, verified: false },
-  ];
-  return (
-    <svg viewBox="0 0 300 230" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full max-h-56">
-      {rooms.map((r, i) => (
-        <motion.g key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.15 + 0.1 }}>
-          <rect x={r.x} y={r.y} width={r.w} height={r.h} rx="5"
-            fill={r.verified ? "#F0FDF4" : "#F8FAFC"} stroke={r.verified ? "#86EFAC" : "#E2E8F0"} strokeWidth="1.5" />
-          <text x={r.x + r.w / 2} y={r.y + r.h / 2 - 4} textAnchor="middle" fontSize="8" fill="#374151" fontWeight="600">
-            {r.name}
-          </text>
-          {r.verified && (
-            <motion.g initial={{ scale: 0 }} animate={{ scale: 1 }}
-              transition={{ delay: i * 0.15 + 0.5, type: "spring", stiffness: 300 }}
-              style={{ transformOrigin: `${r.x + r.w - 12}px ${r.y + 12}px` }}>
-              <circle cx={r.x + r.w - 12} cy={r.y + 12} r="8" fill="#22C55E" />
-              <text x={r.x + r.w - 12} y={r.y + 15.5} textAnchor="middle" fontSize="9" fill="white">✓</text>
-            </motion.g>
-          )}
-          {!r.verified && <circle cx={r.x + r.w - 12} cy={r.y + 12} r="8" fill="#E2E8F0" />}
-        </motion.g>
-      ))}
-      <line x1="70" y1="108" x2="238" y2="108" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 3" />
-      <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
-        <circle cx="84" cy="195" r="6" fill="#22C55E" />
-        <text x="93" y="199" fontSize="8.5" fill="#374151">Verified from floor plan</text>
-        <circle cx="176" cy="195" r="6" fill="#E2E8F0" />
-        <text x="185" y="199" fontSize="8.5" fill="#374151">Pending</text>
-      </motion.g>
     </svg>
   );
 }
@@ -258,7 +247,9 @@ const slideVariants = {
 };
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const { currentStep, nextStep, prevStep, setStep } = useOnboardingStore();
+  const [showConsultantModal, setShowConsultantModal] = useState(false);
   const isLastStep = currentStep === 3;
   const isStep3 = currentStep === 2; // Add Floor Plans step
   const meta = stepMeta[currentStep];
@@ -284,27 +275,25 @@ export default function OnboardingPage() {
                 {/* Step header */}
                 {!isLastStep && (
                   <div className="px-6 sm:px-8 pt-7 pb-5 border-b border-border">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-xs font-semibold text-text-muted font-mono uppercase tracking-widest mb-1">
-                          Step {currentStep + 1} of {STEPS.length}
-                        </p>
-                        <h1 className="text-xl sm:text-2xl font-700 text-text"
-                          style={{ fontFamily: "var(--font-manrope)", fontWeight: 700 }}>
-                          {meta.title}
-                        </h1>
-                        <p className="text-sm text-text-muted font-body mt-1">{meta.subtitle}</p>
-                      </div>
+                    <p className="text-xs font-semibold text-text-muted font-mono uppercase tracking-widest mb-1">
+                      Step {currentStep + 1} of {STEPS.length}
+                    </p>
+                    <div className="flex items-center justify-between gap-4">
+                      <h1 className="text-xl sm:text-2xl font-700 text-text"
+                        style={{ fontFamily: "var(--font-manrope)", fontWeight: 700 }}>
+                        {meta.title}
+                      </h1>
                       {isStep3 && (
-                        <Button 
-                          variant="secondary" 
-                          size="lg" 
-                          className="h-10 text-xs border-primary text-primary hover:bg-primary/5"
+                        <button
+                          type="button"
+                          onClick={() => setShowConsultantModal(true)}
+                          className="shrink-0 text-sm font-medium text-text-muted hover:text-primary underline underline-offset-2 transition-colors font-body"
                         >
-                          Don’t have a floor plan
-                        </Button>
+                          Don&apos;t have a floor plan?
+                        </button>
                       )}
                     </div>
+                    <p className="text-sm text-text-muted font-body mt-1">{meta.subtitle}</p>
                   </div>
                 )}
 
@@ -369,6 +358,16 @@ export default function OnboardingPage() {
           </div>
         </div>
       </main>
+
+      {/* Consultant Modal */}
+      <AnimatePresence>
+        {showConsultantModal && (
+          <ConsultantModal
+            onClose={() => setShowConsultantModal(false)}
+            onDashboard={() => router.push("/dashboard")}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

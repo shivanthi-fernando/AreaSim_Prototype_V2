@@ -67,7 +67,7 @@ export function FloorCanvas({ floorId, imageUrl, onOpenGuide }: FloorCanvasProps
     activeTool, getRoomsForFloor, getZonesForFloor,
     addRoom, deleteRoom, addZone,
     selectedRoomIds, toggleRoomSelection, clearSelection,
-    setDetailPanel, setTool, updateRoomPoints,
+    setTool, updateRoomPoints,
   } = useCanvasStore();
 
   const rooms = getRoomsForFloor(floorId);
@@ -144,6 +144,8 @@ export function FloorCanvas({ floorId, imageUrl, onOpenGuide }: FloorCanvasProps
       status: "unvisited",
       countHistory: [],
       currentCount: 0,
+      sqm: 0,
+      verified: false,
     };
     addRoom(floorId, newRoom);
     const xs = drawPoints.filter((_, i) => i % 2 === 0);

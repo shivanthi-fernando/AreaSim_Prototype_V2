@@ -2,28 +2,24 @@
 
 import { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Clock, 
-  User as UserIcon,
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
   ChevronDown,
   LayoutGrid
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   Area,
   AreaChart
 } from "recharts";
 import { useCanvasStore } from "@/store/canvas";
-import { Button } from "@/components/ui/Button";
 import { cn, formatNumber } from "@/lib/utils";
 
 // --- Mock History Generation ---

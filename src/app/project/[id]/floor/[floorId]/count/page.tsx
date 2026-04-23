@@ -61,8 +61,8 @@ export default function FloorCountPage() {
     return getFormattedDate(d);
   });
   
-  const [currentDay] = useState(1);
-  const [currentRound] = useState(1);
+  const [_currentDay] = useState(1);
+  const [_currentRound] = useState(1);
   const [activeSection, setActiveSection] = useState<"left" | "right">("left");
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   
@@ -76,12 +76,12 @@ export default function FloorCountPage() {
     });
     return initial;
   });
-  const [comments, setComments] = useState("");
+  const [_comments, _setComments] = useState("");
   const [showStopModal, setShowStopModal] = useState(false);
-  const [isSessionSaved, setIsSessionSaved] = useState(false);
+  const [_isSessionSaved, setIsSessionSaved] = useState(false);
   const [pendingNav, setPendingNav] = useState<string | null>(null);
 
-  const [selectedProject, setSelectedProject] = useState(mockProject.name);
+  const [selectedProject, _setSelectedProject] = useState(mockProject.name);
   const [selectedFloorName, setSelectedFloorName] = useState(floor?.name || "Ground Floor");
   const [showNextFloorModal, setShowNextFloorModal] = useState(false);
   const [showSeatVerifyModal, setShowSeatVerifyModal] = useState(false);
@@ -110,7 +110,7 @@ export default function FloorCountPage() {
   const selectedZone = zones.find(z => z.id === selectedRoom?.zoneId);
 
   const handleStartSession = () => setIsRecording(true);
-  const handleStopSession = () => {
+  const _handleStopSession = () => {
     const countedAny = Object.keys(sessionCounts).length > 0;
     if (!countedAny) {
       alert("Please count at least one room before stopping the session.");

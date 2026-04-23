@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { X, ArrowRight, SlidersHorizontal } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useCanvasStore } from "@/store/canvas";
 import { Room } from "@/lib/mockData";
@@ -12,7 +11,7 @@ interface RoomModalProps {
   room: Room;
   floorId: string;
   onClose: () => void;
-  onViewDetails: () => void;
+  onViewDetails?: () => void;
 }
 
 /** Floating modal that appears after drawing a room polygon. */

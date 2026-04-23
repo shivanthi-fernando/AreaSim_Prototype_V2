@@ -27,21 +27,6 @@ function AnimatedNumber({ value }: { value: number }) {
   return <span>{formatNumber(displayed)}</span>;
 }
 
-function BlueprintAccent() {
-  return (
-    <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.07]" viewBox="0 0 160 48" preserveAspectRatio="xMidYMid slice">
-      {[16, 32, 48, 64, 80, 96, 112, 128, 144].map((x) =>
-        [12, 24, 36].map((y) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1" fill="#0A4F6E" />)
-      )}
-      <line x1="0" y1="24" x2="160" y2="24" stroke="#0A4F6E" strokeWidth="0.5" strokeDasharray="4 4" />
-      <line x1="80" y1="0" x2="80" y2="48" stroke="#0A4F6E" strokeWidth="0.5" strokeDasharray="4 4" />
-      <rect x="20" y="8" width="22" height="16" rx="2" stroke="#0A4F6E" strokeWidth="0.8" fill="none" />
-      <rect x="56" y="8" width="14" height="16" rx="2" stroke="#0A4F6E" strokeWidth="0.8" fill="none" />
-      <rect x="104" y="8" width="30" height="16" rx="2" stroke="#0A4F6E" strokeWidth="0.8" fill="none" />
-    </svg>
-  );
-}
-
 // Ring burst particles shown when first room is drawn
 function BurstRing({ color }: { color: string }) {
   return (

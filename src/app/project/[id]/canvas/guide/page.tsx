@@ -50,7 +50,7 @@ function IllustrationWelcome() {
   );
 }
 
-export function IllustrationDrawRoom() {
+function IllustrationDrawRoom() {
   const points = [
     { x: 80, y: 130 }, { x: 80, y: 50 }, { x: 200, y: 50 }, { x: 240, y: 90 }, { x: 240, y: 130 },
   ];

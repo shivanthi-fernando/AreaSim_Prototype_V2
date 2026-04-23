@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, User, Building2, ArrowRight } from "lucide-react";
+import { Mail, User, Building2, Hash, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -21,7 +21,12 @@ const itemVariants = {
 export default function SignUpPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [values, setValues] = useState({ fullName: "", company: "", email: "" });
+  const [values, setValues] = useState({
+    fullName: "",
+    workEmail: "",
+    organization: "",
+    organizationNumber: "",
+  });
 
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setValues((v) => ({ ...v, [field]: e.target.value }));
@@ -29,7 +34,7 @@ export default function SignUpPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    sessionStorage.setItem("signup-email", values.email);
+    sessionStorage.setItem("signup-email", values.workEmail);
     await new Promise((r) => setTimeout(r, 700));
     router.push("/verify-email");
   };
@@ -56,12 +61,38 @@ export default function SignUpPage() {
             value={values.fullName} onChange={handleChange("fullName")} />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <Input label="Company" placeholder="Larsen & Partners AS" icon={<Building2 size={16} />}
-            value={values.company} onChange={handleChange("company")} />
+          <Input label="Work email" type="email" placeholder="ingrid@company.no" icon={<Mail size={16} />}
+            value={values.workEmail} onChange={handleChange("workEmail")} />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <Input label="Work email" type="email" placeholder="ingrid@company.no" icon={<Mail size={16} />}
-            value={values.email} onChange={handleChange("email")} />
+          <Input label="Organization" placeholder="Larsen & Partners AS" icon={<Building2 size={16} />}
+            value={values.organization} onChange={handleChange("organization")} />
+        </motion.div>
+        <motion.div variants={itemVariants}>
+          <Input label="Organization number" placeholder="e.g. 123 456 789" icon={<Hash size={16} />}
+            value={values.organizationNumber} onChange={handleChange("organizationNumber")} />
+        </motion.div>
+        <motion.div variants={itemVariants}>
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <div className="relative flex items-center shrink-0 mt-0.5">
+              <input
+                type="checkbox"
+                className="peer w-4 h-4 rounded border-2 border-border bg-surface appearance-none cursor-pointer checked:bg-primary checked:border-primary transition-all focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+              <svg
+                className="absolute inset-0 w-4 h-4 text-white pointer-events-none hidden peer-checked:block"
+                viewBox="0 0 16 16" fill="none"
+              >
+                <path d="M3 8l3.5 3.5L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <span className="text-sm text-text-muted font-body leading-relaxed">
+              I hereby confirm that I have read and agree with the{" "}
+              <a href="#" className="text-primary hover:underline font-medium" onClick={(e) => e.stopPropagation()}>terms of service</a>
+              {" "}and{" "}
+              <a href="#" className="text-primary hover:underline font-medium" onClick={(e) => e.stopPropagation()}>privacy policy</a>.
+            </span>
+          </label>
         </motion.div>
         <motion.div variants={itemVariants}>
           <Button type="submit" className="w-full" size="lg" loading={loading}

@@ -4,15 +4,14 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, Plus, CheckCircle2, Loader2, Circle,
-  Pencil, ChevronRight, Sparkles,
+  Pencil, Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useCanvasStore } from "@/store/canvas";
 import { useRouter, useParams } from "next/navigation";
-import { mockProject } from "@/lib/mockData";
-import { IllustrationDrawRoom } from "@/app/project/[id]/canvas/guide/page";
+import { IllustrationDrawRoom } from "@/components/canvas/IllustrationDrawRoom";
 import { Logo } from "@/components/ui/Logo";
-import { cn } from "@/lib/utils";
+import { cn, formatNumber } from "@/lib/utils";
 import type { Room } from "@/lib/mockData";
 
 interface DetailPanelProps {
@@ -43,16 +42,16 @@ export function DetailPanel({ floorId: _initialFloorId }: DetailPanelProps) {
   const rooms = getRoomsForFloor(floor?.id ?? "");
   const zones = getZonesForFloor(floor?.id ?? "");
   const detectedRooms = getDetectedRooms(floor?.id ?? "");
-  const unzonedRooms = rooms.filter((r) => !r.zoneId);
+  const _unzonedRooms = rooms.filter((r) => !r.zoneId);
 
-  const pendingDetected = detectedRooms.filter(
+  const _pendingDetected = detectedRooms.filter(
     (dr) => !dr.verified && !rooms.some((r) => r.name.toLowerCase().trim() === dr.name.toLowerCase().trim())
   );
   const matchedRooms = rooms.filter((r) =>
     detectedRooms.some((dr) => dr.name.toLowerCase().trim() === r.name.toLowerCase().trim())
   );
 
-  const handleAddFloor = () => {
+  const _handleAddFloor = () => {
     const newFloor = {
       id: `floor-${Date.now()}`,
       name: `Floor ${floors.length + 1}`,
@@ -67,7 +66,7 @@ export function DetailPanel({ floorId: _initialFloorId }: DetailPanelProps) {
   };
 
   // Start counting for an AI-detected room — add stub room if not drawn yet
-  const handleCountDetected = (drId: string, drName: string) => {
+  const _handleCountDetected = (drId: string, drName: string) => {
     if (!floor) return;
     const existingRoom = rooms.find(
       (r) => r.name.toLowerCase().trim() === drName.toLowerCase().trim() || r.id === drId
@@ -248,7 +247,7 @@ function RoomRow({
   room: Room;
   onUpdate: (data: Partial<Room>) => void;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, _setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [tempName, setTempName] = useState(room.name);
 
