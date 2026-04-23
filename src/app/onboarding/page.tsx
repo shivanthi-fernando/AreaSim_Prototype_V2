@@ -386,6 +386,7 @@ export default function OnboardingPage() {
   const [showConsultantModal, setShowConsultantModal] = useState(false);
   const isLastStep = currentStep === 3;
   const isStep3 = currentStep === 2; // Add Floor Plans step
+  const isLeaseStep = currentStep === 1; // Add Lease Parameters step
   const meta = stepMeta[currentStep];
 
   return (
@@ -402,12 +403,27 @@ export default function OnboardingPage() {
 
           {/* Split card */}
           <div className="rounded-2xl border border-border bg-surface shadow-card overflow-hidden">
+
+            {/* Full-width header for lease step */}
+            {isLeaseStep && (
+              <div className="px-6 sm:px-8 pt-7 pb-5 border-b border-border">
+                <p className="text-xs font-semibold text-text-muted font-mono uppercase tracking-widest mb-1">
+                  Step {currentStep + 1} of {STEPS.length}
+                </p>
+                <h1 className="text-xl sm:text-2xl text-text"
+                  style={{ fontFamily: "var(--font-manrope)", fontWeight: 700 }}>
+                  {meta.title}
+                </h1>
+                <p className="text-sm text-text-muted font-body mt-1">{meta.subtitle}</p>
+              </div>
+            )}
+
             <div className={`grid grid-cols-1 ${isLastStep || isStep3 ? "" : "lg:grid-cols-2"}`}>
 
               {/* ── Left: form ────────────────────────────────────────── */}
-              <div className={`flex flex-col ${isLastStep || isStep3 ? "" : "border-b lg:border-b-0 lg:border-r border-border"}`}>
-                {/* Step header */}
-                {!isLastStep && (
+              <div className={`flex flex-col ${isLastStep || isStep3 || isLeaseStep ? "" : "border-b lg:border-b-0 lg:border-r border-border"}`}>
+                {/* Step header — only for non-lease steps */}
+                {!isLastStep && !isLeaseStep && (
                   <div className="px-6 sm:px-8 pt-7 pb-5 border-b border-border">
                     <p className="text-xs font-semibold text-text-muted font-mono uppercase tracking-widest mb-1">
                       Step {currentStep + 1} of {STEPS.length}
@@ -451,8 +467,12 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              {/* ── Right: illustration or live benchmark (hidden on last step and step 3) ────────── */}
-              <div className={`${isLastStep || isStep3 ? "hidden" : "hidden lg:flex"} items-center justify-center bg-gradient-to-br ${meta.illuBg} px-8 py-10 min-h-[420px]`}>
+              {/* ── Right: illustration or live benchmark ────────── */}
+              <div className={`${isLastStep || isStep3 ? "hidden" : "hidden lg:flex"} ${
+                isLeaseStep
+                  ? "bg-surface items-start px-8 py-7"
+                  : `items-center justify-center bg-gradient-to-br ${meta.illuBg} px-8 py-10 min-h-[420px]`
+              }`}>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentStep}
@@ -460,13 +480,17 @@ export default function OnboardingPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-                    className="w-full max-w-xs"
+                    className="w-full"
                   >
-                    {currentStep === 1 ? (
-                      <LeaseBenchmarkPanel />
+                    {isLeaseStep ? (
+                      <div className="rounded-2xl bg-surface-2 border border-border p-5">
+                        <LeaseBenchmarkPanel />
+                      </div>
                     ) : (
                       <>
-                        {ILLUSTRATIONS[currentStep]}
+                        <div className="max-w-xs mx-auto">
+                          {ILLUSTRATIONS[currentStep]}
+                        </div>
                         {/* Step label pill */}
                         <motion.div
                           initial={{ opacity: 0, y: 8 }}
