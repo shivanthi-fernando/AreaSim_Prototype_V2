@@ -58,6 +58,7 @@ interface OnboardingState {
 const defaultProject: ProjectDetails = {
   projectName: "",
   officeAddress: "",
+  city: "",
   postalCode: "",
   category: "",
   industry: "",
