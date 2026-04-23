@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Phone, Mail } from "lucide-react";
+import { X, Phone, Mail, BarChart2 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { StepIndicator } from "@/components/ui/StepIndicator";
 import { Step1Project } from "@/components/onboarding/Step1Project";
@@ -122,7 +122,7 @@ const STEPS = [
 
 const stepMeta: Record<number, { title: string; subtitle: string; illuBg: string }> = {
   0: { title: "Create Your First Project",   subtitle: "Tell us about your building and location.",     illuBg: "from-blue-50 to-sky-100" },
-  1: { title: "Add Lease Parameters",        subtitle: "Enter your area and cost details.",              illuBg: "from-amber-50 to-orange-100" },
+  1: { title: "Add Lease Parameters",        subtitle: "Enter your area and cost details.",              illuBg: "from-blue-50 to-sky-100" },
   2: { title: "Add Floor Plans",             subtitle: "Upload and verify your floor plan layouts.",    illuBg: "from-indigo-50 to-blue-100" },
   3: { title: "Great you're all set!",       subtitle: "Your setup is complete.",                        illuBg: "from-green-50 to-teal-100" },
 };
@@ -162,35 +162,169 @@ function IlluStep1() {
   );
 }
 
-function IlluStep3() {
+// ─── Live Lease Benchmark Panel ──────────────────────────────────────────────
+
+const BENCHMARKS: Record<string, { costPerEmployee: number; areaPerEmployee: number; label: string }> = {
+  technology:    { costPerEmployee: 55000, areaPerEmployee: 12, label: "Technology" },
+  finance:       { costPerEmployee: 70000, areaPerEmployee: 14, label: "Finance & Banking" },
+  creative:      { costPerEmployee: 45000, areaPerEmployee: 10, label: "Creative & Media" },
+  manufacturing: { costPerEmployee: 35000, areaPerEmployee: 20, label: "Manufacturing" },
+  services:      { costPerEmployee: 60000, areaPerEmployee: 13, label: "Prof. Services" },
+  other:         { costPerEmployee: 50000, areaPerEmployee: 12, label: "All Industries" },
+};
+
+function BenchmarkBar({
+  label, yourValue, benchValue, yourPct, benchPct, diffPct, color,
+}: {
+  label: string; yourValue: string; benchValue: string;
+  yourPct: number; benchPct: number; diffPct: number | null; color: string;
+}) {
+  const isAbove = (diffPct ?? 0) > 2;
+  const isBelow = (diffPct ?? 0) < -2;
   return (
-    <svg viewBox="0 0 300 260" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full max-h-60">
-      <rect x="30" y="30" width="240" height="195" rx="12" fill="white" stroke="#E2E8F0" strokeWidth="1.5"
-        style={{ filter: "drop-shadow(0 4px 16px rgba(0,0,0,0.06))" }} />
-      <rect x="30" y="30" width="240" height="32" rx="12" fill="#F8FAFC" />
-      <rect x="30" y="50" width="240" height="12" fill="#F8FAFC" />
-      <text x="46" y="50" fontSize="9" fill="#94A3B8" fontWeight="600">LEASE OVERVIEW</text>
-      {[
-        { label: "Annual Rent",  value: "NOK 2,500,000", color: "#DBEAFE", text: "#1D4ED8", y: 75 },
-        { label: "Total Area",   value: "10,000 SqFt",   color: "#DCFCE7", text: "#15803D", y: 113 },
-        { label: "Common Area",  value: "NOK 400,000",   color: "#FEF9C3", text: "#854D0E", y: 151 },
-        { label: "Headcount",    value: "120 people",    color: "#F3E8FF", text: "#7E22CE", y: 189 },
-      ].map((m, i) => (
-        <motion.g key={i} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 + i * 0.12 }}>
-          <rect x="44" y={m.y} width={212} height={28} rx="6" fill={m.color} />
-          <text x="54" y={m.y + 18} fontSize="9" fill="#374151">{m.label}</text>
-          <text x="248" y={m.y + 18} textAnchor="end" fontSize="9.5" fill={m.text} fontWeight="700">{m.value}</text>
-        </motion.g>
-      ))}
-      <motion.rect x="44" y="225" width="0" height="6" rx="3" fill="url(#leaseGrad)"
-        animate={{ width: 180 }} transition={{ delay: 0.8, duration: 1, ease: "easeOut" }} />
-      <defs>
-        <linearGradient id="leaseGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#1A7FA8" /><stop offset="100%" stopColor="#0F7663" />
-        </linearGradient>
-      </defs>
-    </svg>
+    <div className="space-y-2.5">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-[10px] font-bold text-text uppercase tracking-wider font-mono leading-tight">{label}</p>
+        {diffPct !== null && Math.abs(diffPct) > 2 && (
+          <span className={`shrink-0 text-[9px] font-bold px-2 py-0.5 rounded-full ${
+            isAbove ? "bg-red-50 text-red-500 border border-red-100"
+            : isBelow ? "bg-green-50 text-green-600 border border-green-100"
+            : "bg-surface-2 text-text-muted"
+          }`}>
+            {isAbove ? `▲ ${diffPct}%` : `▼ ${Math.abs(diffPct)}%`}
+          </span>
+        )}
+      </div>
+      {/* Your bar */}
+      <div className="space-y-0.5">
+        <div className="flex justify-between">
+          <span className="text-[9px] text-text-muted">Yours</span>
+          <span className="text-[10px] font-bold text-text">{yourValue}</span>
+        </div>
+        <div className="h-2 bg-white/60 rounded-full overflow-hidden">
+          <motion.div className={`h-full ${color} rounded-full`}
+            initial={{ width: 0 }} animate={{ width: `${yourPct}%` }}
+            transition={{ duration: 0.6, ease: "easeOut" }} />
+        </div>
+      </div>
+      {/* Benchmark bar */}
+      <div className="space-y-0.5">
+        <div className="flex justify-between">
+          <span className="text-[9px] text-text-muted">Industry avg</span>
+          <span className="text-[10px] text-text-muted font-semibold">{benchValue}</span>
+        </div>
+        <div className="h-2 bg-white/60 rounded-full overflow-hidden">
+          <motion.div className="h-full bg-[#B0C4D8] rounded-full"
+            initial={{ width: 0 }} animate={{ width: `${benchPct}%` }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LeaseBenchmarkPanel() {
+  const { leaseParams, project } = useOnboardingStore();
+
+  const annualRent    = parseFloat(leaseParams.annualRent || "0");
+  const commonArea    = parseFloat(leaseParams.commonAreaCost || "0");
+  const totalArea     = parseFloat(leaseParams.totalArea || "0");
+  const employees     = Math.max(leaseParams.targetHeadcount || 1, 1);
+  const totalCost     = annualRent + commonArea;
+
+  const bench = BENCHMARKS[project.industry] || BENCHMARKS.other;
+  const hasData = totalCost > 0 || totalArea > 0;
+
+  const actualCostPerPerson = totalCost / employees;
+  const actualAreaPerPerson = totalArea / employees;
+
+  const costDiff  = actualCostPerPerson > 0 ? Math.round(((actualCostPerPerson  - bench.costPerEmployee) / bench.costPerEmployee) * 100) : null;
+  const areaDiff  = actualAreaPerPerson > 0 ? Math.round(((actualAreaPerPerson  - bench.areaPerEmployee) / bench.areaPerEmployee) * 100) : null;
+
+  const costMax = Math.max(actualCostPerPerson, bench.costPerEmployee, 1);
+  const areaMax = Math.max(actualAreaPerPerson, bench.areaPerEmployee, 1);
+
+  const fmtNOK = (v: number) => `NOK ${Math.round(v).toLocaleString("no-NO")}`;
+  const fmtM2  = (v: number) => `${v % 1 === 0 ? v : v.toFixed(1)} m²`;
+
+  const worstDiff = Math.max(Math.abs(costDiff ?? 0), Math.abs(areaDiff ?? 0));
+  const worstIsCost = Math.abs(costDiff ?? 0) >= Math.abs(areaDiff ?? 0);
+
+  if (!hasData) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-center gap-4 px-2 py-8">
+        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+          <BarChart2 size={22} className="text-primary" />
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm font-bold text-text" style={{ fontFamily: "var(--font-manrope)" }}>
+            Industry Benchmark
+          </p>
+          <p className="text-xs text-text-muted font-body leading-relaxed max-w-[220px]">
+            Fill in your lease details to see how your cost and space compare with the <span className="font-semibold text-primary">{bench.label}</span> industry average.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="w-full flex flex-col gap-5"
+    >
+      {/* Header */}
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="text-[10px] font-bold text-text uppercase tracking-widest font-mono">Industry Benchmark</p>
+          <p className="text-[11px] text-text-muted mt-0.5">vs. {bench.label} average</p>
+        </div>
+        <span className="shrink-0 text-[9px] font-semibold bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/15">
+          {bench.label}
+        </span>
+      </div>
+
+      {/* Cost per employee */}
+      <BenchmarkBar
+        label="Cost / employee / year"
+        yourValue={actualCostPerPerson > 0 ? fmtNOK(actualCostPerPerson) : "—"}
+        benchValue={fmtNOK(bench.costPerEmployee)}
+        yourPct={(actualCostPerPerson / costMax) * 100}
+        benchPct={(bench.costPerEmployee / costMax) * 100}
+        diffPct={costDiff}
+        color="bg-primary"
+      />
+
+      {/* Area per employee */}
+      <BenchmarkBar
+        label="Area / employee"
+        yourValue={actualAreaPerPerson > 0 ? fmtM2(actualAreaPerPerson) : "—"}
+        benchValue={fmtM2(bench.areaPerEmployee)}
+        yourPct={(actualAreaPerPerson / areaMax) * 100}
+        benchPct={(bench.areaPerEmployee / areaMax) * 100}
+        diffPct={areaDiff}
+        color="bg-accent"
+      />
+
+      {/* Insight message */}
+      {worstDiff > 5 && (
+        <motion.div
+          initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className={`p-3 rounded-xl border text-xs font-body leading-relaxed ${
+            (costDiff ?? 0) > 5 || (areaDiff ?? 0) > 5
+              ? "bg-red-50/60 border-red-100 text-red-700"
+              : "bg-green-50/60 border-green-100 text-green-700"
+          }`}
+        >
+          {(worstIsCost ? (costDiff ?? 0) : (areaDiff ?? 0)) > 5
+            ? `You're ${worstDiff}% above the ${bench.label} average ${worstIsCost ? "cost" : "space usage"}. Don't worry — we'll help you fix that.`
+            : `Your ${worstIsCost ? "cost" : "space usage"} is ${Math.abs(worstDiff)}% below the industry average. You're in good shape!`
+          }
+        </motion.div>
+      )}
+    </motion.div>
   );
 }
 
@@ -233,9 +367,9 @@ function IlluStep6() {
 
 const ILLUSTRATIONS = [
   <IlluStep1 key={0} />,
-  <IlluStep3 key={1} />, // Lease illustration for Step 2
-  null,                  // No illustration for Step 3
-  <IlluStep6 key={3} />, // Done illustration for Step 4
+  null,                  // Step 2 uses LeaseBenchmarkPanel (rendered separately)
+  null,                  // Step 3 (floor plans) has no illustration
+  <IlluStep6 key={3} />, // Done illustration
 ];
 
 const slideVariants = {
@@ -317,7 +451,7 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              {/* ── Right: illustration (hidden on last step and step 3) ────────── */}
+              {/* ── Right: illustration or live benchmark (hidden on last step and step 3) ────────── */}
               <div className={`${isLastStep || isStep3 ? "hidden" : "hidden lg:flex"} items-center justify-center bg-gradient-to-br ${meta.illuBg} px-8 py-10 min-h-[420px]`}>
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -328,19 +462,24 @@ export default function OnboardingPage() {
                     transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
                     className="w-full max-w-xs"
                   >
-                    {ILLUSTRATIONS[currentStep]}
-
-                    {/* Step label pill */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="mt-5 text-center"
-                    >
-                      <span className="inline-block rounded-full bg-white/70 border border-white/60 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold text-text/70 font-body">
-                        {meta.subtitle}
-                      </span>
-                    </motion.div>
+                    {currentStep === 1 ? (
+                      <LeaseBenchmarkPanel />
+                    ) : (
+                      <>
+                        {ILLUSTRATIONS[currentStep]}
+                        {/* Step label pill */}
+                        <motion.div
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.3 }}
+                          className="mt-5 text-center"
+                        >
+                          <span className="inline-block rounded-full bg-white/70 border border-white/60 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold text-text/70 font-body">
+                            {meta.subtitle}
+                          </span>
+                        </motion.div>
+                      </>
+                    )}
                   </motion.div>
                 </AnimatePresence>
               </div>

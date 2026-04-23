@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -50,6 +51,21 @@ export function Step3Lease({ onNext, onBack }: Props) {
   const consultants = watch("consultantsCount") || 0;
   const showConsultants = watch("showConsultants");
   const effectiveTotal = employees + (showConsultants ? consultants * 0.5 : 0);
+
+  // Push live values to store so the right-panel benchmark can react in real time
+  useEffect(() => {
+    const subscription = watch((values) => {
+      setLeaseParams({
+        totalArea: String(values.totalArea ?? ""),
+        annualRent: String(values.annualRent ?? ""),
+        commonAreaCost: String(values.commonAreaCost ?? ""),
+        targetHeadcount: Number(values.targetHeadcount) || 1,
+        consultantsCount: Number(values.consultantsCount) || 0,
+        showConsultants: Boolean(values.showConsultants),
+      });
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setLeaseParams]);
 
   const onSubmit = (data: FormValues) => {
     setLeaseParams(data as LeaseParams);
