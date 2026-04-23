@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Phone, Mail, BarChart2 } from "lucide-react";
+import { X, Phone, Mail, BarChart2, ArrowLeft, ArrowRight, Upload } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { StepIndicator } from "@/components/ui/StepIndicator";
 import { Step1Project } from "@/components/onboarding/Step1Project";
@@ -385,8 +386,9 @@ export default function OnboardingPage() {
   const { currentStep, nextStep, prevStep, setStep } = useOnboardingStore();
   const [showConsultantModal, setShowConsultantModal] = useState(false);
   const isLastStep = currentStep === 3;
-  const isStep3 = currentStep === 2; // Add Floor Plans step
+  const isStep3 = currentStep === 2;    // Add Floor Plans step
   const isLeaseStep = currentStep === 1; // Add Lease Parameters step
+  const isCreateStep = currentStep === 0; // Create Project step
   const meta = stepMeta[currentStep];
 
   return (
@@ -404,8 +406,8 @@ export default function OnboardingPage() {
           {/* Split card */}
           <div className="rounded-2xl border border-border bg-surface shadow-card overflow-hidden">
 
-            {/* Full-width header for lease step */}
-            {isLeaseStep && (
+            {/* Full-width header: create project + lease steps */}
+            {(isCreateStep || isLeaseStep) && !isLastStep && (
               <div className="px-6 sm:px-8 pt-7 pb-5 border-b border-border">
                 <p className="text-xs font-semibold text-text-muted font-mono uppercase tracking-widest mb-1">
                   Step {currentStep + 1} of {STEPS.length}
@@ -418,12 +420,12 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            <div className={`grid grid-cols-1 ${isLastStep || isStep3 ? "" : "lg:grid-cols-2"}`}>
+            <div className={`grid grid-cols-1 ${isLastStep || isStep3 || isCreateStep ? "" : "lg:grid-cols-2"}`}>
 
               {/* ── Left: form ────────────────────────────────────────── */}
-              <div className={`flex flex-col ${isLastStep || isStep3 || isLeaseStep ? "" : "border-b lg:border-b-0 lg:border-r border-border"}`}>
-                {/* Step header — only for non-lease steps */}
-                {!isLastStep && !isLeaseStep && (
+              <div className={`flex flex-col ${isLastStep || isStep3 || isLeaseStep || isCreateStep ? "" : "border-b lg:border-b-0 lg:border-r border-border"}`}>
+                {/* Step header — only for step 3 (floor plans) which still uses the in-column header */}
+                {!isLastStep && !isLeaseStep && !isCreateStep && (
                   <div className="px-6 sm:px-8 pt-7 pb-5 border-b border-border">
                     <p className="text-xs font-semibold text-text-muted font-mono uppercase tracking-widest mb-1">
                       Step {currentStep + 1} of {STEPS.length}
@@ -458,8 +460,13 @@ export default function OnboardingPage() {
                       exit="exitLeft"
                       transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
                     >
-                      {currentStep === 0 && <Step1Project onNext={nextStep} />}
-                      {currentStep === 1 && <Step3Lease onNext={nextStep} onBack={prevStep} />}
+                      {/* Create project: centered form, no right column */}
+                      {currentStep === 0 && (
+                        <div className="max-w-lg mx-auto">
+                          <Step1Project onNext={nextStep} />
+                        </div>
+                      )}
+                      {currentStep === 1 && <Step3Lease onNext={nextStep} />}
                       {currentStep === 2 && <Step3FloorPlans onNext={nextStep} onBack={prevStep} />}
                       {currentStep === 3 && <Step6Done />}
                     </motion.div>
@@ -467,8 +474,8 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              {/* ── Right: illustration or live benchmark ────────── */}
-              <div className={`${isLastStep || isStep3 ? "hidden" : "hidden lg:flex"} ${
+              {/* ── Right: illustration or live benchmark (hidden for create, last, step3) ── */}
+              <div className={`${isLastStep || isStep3 || isCreateStep ? "hidden" : "hidden lg:flex"} ${
                 isLeaseStep
                   ? "bg-surface items-start px-8 py-7"
                   : `items-center justify-center bg-gradient-to-br ${meta.illuBg} px-8 py-10 min-h-[420px]`
@@ -491,7 +498,6 @@ export default function OnboardingPage() {
                         <div className="max-w-xs mx-auto">
                           {ILLUSTRATIONS[currentStep]}
                         </div>
-                        {/* Step label pill */}
                         <motion.div
                           initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -508,6 +514,50 @@ export default function OnboardingPage() {
                 </AnimatePresence>
               </div>
             </div>
+
+            {/* Full-width upload + button footer for lease step */}
+            {isLeaseStep && (
+              <>
+                {/* Upload area */}
+                <div className="px-6 sm:px-8 pt-2 pb-6 border-t border-border">
+                  <label className="text-sm font-medium text-text font-body block mb-1.5 pt-5">
+                    Add additional agreements (e.g. parking, storage)
+                  </label>
+                  <label className="flex flex-col items-center justify-center gap-3 py-8 rounded-xl border-2 border-dashed border-border hover:border-primary/50 hover:bg-primary/[0.02] transition-all cursor-pointer group">
+                    <div className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Upload size={20} className="text-text-muted" />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm font-medium text-text">Click to upload PDFs</p>
+                      <p className="text-xs text-text-muted mt-0.5">or drag and drop files here</p>
+                    </div>
+                    <input type="file" className="hidden" accept=".pdf" multiple />
+                  </label>
+                </div>
+
+                {/* Navigation buttons */}
+                <div className="px-6 sm:px-8 py-5 border-t border-border flex items-center justify-between">
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    type="button"
+                    onClick={prevStep}
+                    icon={<ArrowLeft size={16} />}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    size="lg"
+                    type="submit"
+                    form="lease-form"
+                    icon={<ArrowRight size={16} />}
+                    iconPosition="right"
+                  >
+                    Continue
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Progress dots (mobile only) */}

@@ -5,8 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowLeft, Upload } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { useOnboardingStore, LeaseParams } from "@/store/onboarding";
 import { formatNumber } from "@/lib/utils";
 
@@ -23,10 +21,9 @@ type FormValues = z.infer<typeof schema>;
 
 interface Props {
   onNext: () => void;
-  onBack: () => void;
 }
 
-export function Step3Lease({ onNext, onBack }: Props) {
+export function Step3Lease({ onNext }: Props) {
   const { leaseParams, setLeaseParams } = useOnboardingStore();
 
   const {
@@ -77,6 +74,7 @@ export function Step3Lease({ onNext, onBack }: Props) {
 
   return (
     <motion.form
+      id="lease-form"
       variants={stagger}
       initial="hidden"
       animate="visible"
@@ -223,32 +221,6 @@ export function Step3Lease({ onNext, onBack }: Props) {
           </p>
         </motion.div>
       )}
-
-      {/* Additional agreements upload */}
-      <motion.div variants={item} className="space-y-1.5 pt-4">
-        <label className="text-sm font-medium text-text font-body">
-          Add additional agreements (e.g. parking, storage)
-        </label>
-        <label className="flex flex-col items-center justify-center gap-3 py-8 rounded-xl border-2 border-dashed border-border hover:border-primary/50 hover:bg-primary/[0.02] transition-all cursor-pointer group">
-          <div className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center group-hover:scale-110 transition-transform">
-            <Upload size={20} className="text-text-muted" />
-          </div>
-          <div className="text-center">
-            <p className="text-sm font-medium text-text">Click to upload PDFs</p>
-            <p className="text-xs text-text-muted mt-0.5">or drag and drop files here</p>
-          </div>
-          <input type="file" className="hidden" accept=".pdf" multiple />
-        </label>
-      </motion.div>
-
-      <motion.div variants={item} className="flex gap-3 pt-6 border-t border-border">
-        <Button variant="secondary" size="lg" type="button" className="flex-1 items-center justify-center" onClick={onBack} icon={<ArrowLeft size={16} />}>
-          Back
-        </Button>
-        <Button size="lg" type="submit" className="flex-1 items-center justify-center" icon={<ArrowRight size={16} />} iconPosition="right">
-          Continue
-        </Button>
-      </motion.div>
     </motion.form>
   );
 }
