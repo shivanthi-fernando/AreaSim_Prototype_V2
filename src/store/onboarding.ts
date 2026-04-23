@@ -25,6 +25,7 @@ export interface LeaseParams {
 export interface ProjectDetails {
   projectName: string;
   officeAddress: string;
+  city: string;
   postalCode: string;
   category: string;
   industry: string;

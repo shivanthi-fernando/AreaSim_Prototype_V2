@@ -13,6 +13,7 @@ import { ArrowRight } from "lucide-react";
 const schema = z.object({
   projectName: z.string().min(2, "Project name is required"),
   officeAddress: z.string().min(1, "Office address is required"),
+  city: z.string().min(1, "City is required"),
   postalCode: z.string().min(1, "Postal code is required"),
   category: z.string().min(1, "Please select a category"),
   industry: z.string().min(1, "Please select an industry"),
@@ -54,6 +55,7 @@ export function Step1Project({ onNext }: Props) {
     defaultValues: {
       projectName: project.projectName || "",
       officeAddress: project.officeAddress || "",
+      city: project.city || "",
       postalCode: project.postalCode || "",
       category: project.category || "",
       industry: project.industry || "",
@@ -97,6 +99,15 @@ export function Step1Project({ onNext }: Props) {
           placeholder="Aker Brygge Tower, Oslo"
           error={errors.officeAddress?.message}
           {...register("officeAddress")}
+        />
+      </motion.div>
+
+      <motion.div variants={item}>
+        <Input
+          label="City"
+          placeholder="Oslo"
+          error={errors.city?.message}
+          {...register("city")}
         />
       </motion.div>
 
