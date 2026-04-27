@@ -171,6 +171,7 @@ const BENCHMARKS: Record<string, { costPerEmployee: number; areaPerEmployee: num
   creative:      { costPerEmployee: 45000, areaPerEmployee: 10, label: "Creative & Media" },
   manufacturing: { costPerEmployee: 35000, areaPerEmployee: 20, label: "Manufacturing" },
   services:      { costPerEmployee: 60000, areaPerEmployee: 13, label: "Prof. Services" },
+  public:        { costPerEmployee: 42000, areaPerEmployee: 18, label: "Public Sector" },
   other:         { costPerEmployee: 50000, areaPerEmployee: 12, label: "All Industries" },
 };
 
@@ -230,7 +231,11 @@ function LeaseBenchmarkPanel() {
   const annualRent    = parseFloat(leaseParams.annualRent || "0");
   const commonArea    = parseFloat(leaseParams.commonAreaCost || "0");
   const totalArea     = parseFloat(leaseParams.totalArea || "0");
-  const employees     = Math.max(leaseParams.targetHeadcount || 1, 1);
+  const baseEmployees = Math.max(leaseParams.targetHeadcount || 1, 1);
+  const consultants   = leaseParams.consultantsCount || 0;
+  const showConsultants = leaseParams.showConsultants || false;
+  // Consultants count as 0.5 each in space calculations
+  const employees     = Math.max(baseEmployees + (showConsultants ? consultants * 0.5 : 0), 1);
   const totalCost     = annualRent + commonArea;
 
   const bench = BENCHMARKS[project.industry] || BENCHMARKS.other;
@@ -490,7 +495,7 @@ export default function OnboardingPage() {
                     className="w-full"
                   >
                     {isLeaseStep ? (
-                      <div className="rounded-2xl bg-surface-2 border border-border p-5">
+                      <div className="rounded-2xl border border-border p-5" style={{ background: "#F8F9FC" }}>
                         <LeaseBenchmarkPanel />
                       </div>
                     ) : (
@@ -521,7 +526,7 @@ export default function OnboardingPage() {
                 {/* Upload area */}
                 <div className="px-6 sm:px-8 pt-2 pb-6 border-t border-border">
                   <label className="text-sm font-medium text-text font-body block mb-1.5 pt-5">
-                    Add additional agreements (e.g. parking, storage)
+                    Add lease contract and additional agreements (e.g. parking, storage)
                   </label>
                   <label className="flex flex-col items-center justify-center gap-3 py-8 rounded-xl border-2 border-dashed border-border hover:border-primary/50 hover:bg-primary/[0.02] transition-all cursor-pointer group">
                     <div className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center group-hover:scale-110 transition-transform">

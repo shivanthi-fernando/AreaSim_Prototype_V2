@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,13 +9,14 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { useOnboardingStore } from "@/store/onboarding";
+import { getCityFromPostalCode } from "@/lib/postalCodes";
 import { ArrowRight } from "lucide-react";
 
 const schema = z.object({
   projectName: z.string().min(2, "Project name is required"),
   officeAddress: z.string().min(1, "Office address is required"),
-  city: z.string().min(1, "City is required"),
-  postalCode: z.string().min(1, "Postal code is required"),
+  city: z.string(),
+  postalCode: z.string().min(4, "Postal code is required"),
   category: z.string().min(1, "Please select a category"),
   industry: z.string().min(1, "Please select an industry"),
 });
@@ -36,6 +38,7 @@ const industries = [
   { value: "creative", label: "Creative & Media" },
   { value: "manufacturing", label: "Manufacturing" },
   { value: "services", label: "Professional Services" },
+  { value: "public", label: "Public" },
   { value: "other", label: "Other" },
 ];
 
@@ -49,6 +52,8 @@ export function Step1Project({ onNext }: Props) {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -62,8 +67,19 @@ export function Step1Project({ onNext }: Props) {
     },
   });
 
+  const postalCode = watch("postalCode");
+  const detectedCity = getCityFromPostalCode(postalCode || "");
+
+  // Keep the hidden city field in sync with the detected city
+  useEffect(() => {
+    setValue("city", detectedCity ?? "");
+  }, [detectedCity, setValue]);
+
   const onSubmit = (data: FormValues) => {
-    setProject(data);
+    setProject({
+      ...data,
+      city: detectedCity ?? data.city ?? "",
+    });
     onNext();
   };
 
@@ -102,23 +118,39 @@ export function Step1Project({ onNext }: Props) {
         />
       </motion.div>
 
+      {/* Postal code — city auto-detected from code and shown inline */}
       <motion.div variants={item}>
-        <Input
-          label="City"
-          placeholder="Oslo"
-          error={errors.city?.message}
-          {...register("city")}
-        />
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-text font-body">Postal code</label>
+          <div className="relative">
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={4}
+              placeholder="e.g. 0123"
+              className="w-full rounded-[10px] border border-border bg-surface px-4 py-2.5 pr-36 text-sm text-text font-body placeholder:text-text-muted/60 transition-all duration-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 hover:border-primary/50"
+              {...register("postalCode")}
+            />
+            {detectedCity && (
+              <motion.span
+                initial={{ opacity: 0, x: 6 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2 }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-xs font-semibold text-accent font-body pointer-events-none"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                {detectedCity}
+              </motion.span>
+            )}
+          </div>
+          {errors.postalCode && (
+            <p className="text-xs text-accent-warm font-body">{errors.postalCode.message}</p>
+          )}
+        </div>
       </motion.div>
 
-      <motion.div variants={item}>
-        <Input
-          label="Postal code"
-          placeholder="0123"
-          error={errors.postalCode?.message}
-          {...register("postalCode")}
-        />
-      </motion.div>
+      {/* Hidden city — populated automatically from postal code */}
+      <input type="hidden" {...register("city")} />
 
       <motion.div variants={item}>
         <Select
