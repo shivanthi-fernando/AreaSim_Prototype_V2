@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -33,13 +32,22 @@ const categories = [
 ];
 
 const industries = [
-  { value: "technology", label: "Technology" },
-  { value: "finance", label: "Finance & Banking" },
-  { value: "creative", label: "Creative & Media" },
-  { value: "manufacturing", label: "Manufacturing" },
-  { value: "services", label: "Professional Services" },
-  { value: "public", label: "Public" },
-  { value: "other", label: "Other" },
+  { value: "real-estate",   label: "Real Estate & Property" },
+  { value: "oil-gas",       label: "Oil & Gas / Energy" },
+  { value: "construction",  label: "Construction & Engineering" },
+  { value: "technology",    label: "Technology / IT Services" },
+  { value: "finance",       label: "Finance & Banking" },
+  { value: "insurance",     label: "Insurance" },
+  { value: "public",        label: "Public Sector / Government" },
+  { value: "healthcare",    label: "Healthcare & Life Sciences" },
+  { value: "retail",        label: "Retail & E-commerce" },
+  { value: "manufacturing", label: "Manufacturing / Industrial" },
+  { value: "shipping",      label: "Shipping & Maritime" },
+  { value: "consulting",    label: "Consulting / Professional Services" },
+  { value: "education",     label: "Education" },
+  { value: "media",         label: "Media & Communication" },
+  { value: "hospitality",   label: "Hospitality & Tourism" },
+  { value: "other",         label: "Other - Ved samlokalisering" },
 ];
 
 interface Props {
@@ -53,7 +61,6 @@ export function Step1Project({ onNext }: Props) {
     register,
     handleSubmit,
     watch,
-    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -70,16 +77,8 @@ export function Step1Project({ onNext }: Props) {
   const postalCode = watch("postalCode");
   const detectedCity = getCityFromPostalCode(postalCode || "");
 
-  // Keep the hidden city field in sync with the detected city
-  useEffect(() => {
-    setValue("city", detectedCity ?? "");
-  }, [detectedCity, setValue]);
-
   const onSubmit = (data: FormValues) => {
-    setProject({
-      ...data,
-      city: detectedCity ?? data.city ?? "",
-    });
+    setProject(data);
     onNext();
   };
 
@@ -118,17 +117,28 @@ export function Step1Project({ onNext }: Props) {
         />
       </motion.div>
 
-      {/* Postal code — city auto-detected from code and shown inline */}
+      <motion.div variants={item}>
+        <Input
+          label="City"
+          placeholder="Oslo"
+          error={errors.city?.message}
+          {...register("city")}
+        />
+      </motion.div>
+
+      {/* Postal code — city auto-detected and shown inline after a comma */}
       <motion.div variants={item}>
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-text font-body">Postal code</label>
-          <div className="relative">
+          <div
+            className="flex items-center w-full rounded-[10px] border border-border bg-surface transition-all duration-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 hover:border-primary/50 overflow-hidden"
+          >
             <input
               type="text"
               inputMode="numeric"
               maxLength={4}
               placeholder="e.g. 0123"
-              className="w-full rounded-[10px] border border-border bg-surface px-4 py-2.5 pr-36 text-sm text-text font-body placeholder:text-text-muted/60 transition-all duration-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 hover:border-primary/50"
+              className="flex-1 bg-transparent px-4 py-2.5 text-sm text-text font-body placeholder:text-text-muted/60 focus:outline-none min-w-0"
               {...register("postalCode")}
             />
             {detectedCity && (
@@ -136,10 +146,9 @@ export function Step1Project({ onNext }: Props) {
                 initial={{ opacity: 0, x: 6 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.2 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-xs font-semibold text-accent font-body pointer-events-none"
+                className="pr-4 text-sm text-text-muted font-body whitespace-nowrap shrink-0 pointer-events-none"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
-                {detectedCity}
+                , {detectedCity}
               </motion.span>
             )}
           </div>
@@ -148,9 +157,6 @@ export function Step1Project({ onNext }: Props) {
           )}
         </div>
       </motion.div>
-
-      {/* Hidden city — populated automatically from postal code */}
-      <input type="hidden" {...register("city")} />
 
       <motion.div variants={item}>
         <Select

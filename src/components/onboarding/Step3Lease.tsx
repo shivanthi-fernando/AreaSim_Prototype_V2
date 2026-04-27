@@ -82,7 +82,7 @@ export function Step3Lease({ onNext }: Props) {
       className="space-y-5"
     >
       <motion.div variants={item} className="pb-2">
-        <p className="text-sm font-medium text-accent bg-accent/5 px-4 py-2.5 rounded-xl border border-accent/10">
+        <p className="text-sm font-medium bg-primary/5 px-4 py-2.5 rounded-xl border border-primary/10" style={{ color: "#0A4F6E" }}>
           Here we want you to add current lease agreements.
         </p>
       </motion.div>
@@ -166,8 +166,8 @@ export function Step3Lease({ onNext }: Props) {
       </motion.div>
 
       {/* Consultants checkbox */}
-      <motion.div variants={item} className="flex items-center gap-2.5 pt-1">
-        <div className="relative flex items-center">
+      <motion.div variants={item} className="flex items-start gap-2.5 pt-1">
+        <div className="relative flex items-center shrink-0 mt-0.5">
           <input
             type="checkbox"
             id="showConsultants"
@@ -181,9 +181,15 @@ export function Step3Lease({ onNext }: Props) {
             <path d="M3 8l3.5 3.5L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
-        <label htmlFor="showConsultants" className="text-sm font-medium text-text font-body cursor-pointer">
-          Consultants
-        </label>
+        <div className="flex flex-col gap-0.5">
+          <label htmlFor="showConsultants" className="text-sm font-medium text-text font-body cursor-pointer leading-snug">
+            Consultants
+          </label>
+          <p className="text-sm text-text-muted font-body leading-relaxed">
+            External individuals working in your office on a project basis,
+            <br />not classified as permanent employees
+          </p>
+        </div>
       </motion.div>
 
       {/* Number of consultants (conditional) */}
@@ -194,7 +200,7 @@ export function Step3Lease({ onNext }: Props) {
           transition={{ duration: 0.2 }}
         >
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-text font-body">Number of consultants</label>
+            <label className="text-sm font-medium text-text font-body">Number of external consultants</label>
             <div className="relative">
               <input
                 type="number"
@@ -212,13 +218,20 @@ export function Step3Lease({ onNext }: Props) {
       )}
 
       {showConsultants && (
-        <motion.div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
-          <p className="text-xs font-medium text-primary font-body">
-            Your total number of employees is <span className="font-semibold">{formatNumber(effectiveTotal)}</span>
+        <motion.div className="p-4 rounded-xl bg-primary/5 border border-primary/10 space-y-2">
+          <p className="text-sm font-semibold text-primary font-body">
+            Your effective headcount is <span className="font-bold">{formatNumber(effectiveTotal)}</span>
           </p>
-          <p className="text-[10px] text-text-muted mt-0.5">
-            (1 Consultant = 0.5 employee in space calculation)
-          </p>
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-primary/80 font-body">
+              Why 0.5 ratio for consultants?
+            </p>
+            <p className="text-[11px] text-text-muted font-body leading-relaxed">
+              External consultants typically share desks, rotate across projects, and do not require
+              a dedicated permanent workstation. The 0.5 weighting reflects their reduced and
+              part-time space needs, giving a more accurate picture of your real estate demand.
+            </p>
+          </div>
         </motion.div>
       )}
     </motion.form>

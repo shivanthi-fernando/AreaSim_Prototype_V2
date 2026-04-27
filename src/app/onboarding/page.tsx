@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Phone, Mail, BarChart2, ArrowLeft, ArrowRight, Upload } from "lucide-react";
+import { X, Phone, Mail, BarChart2, ArrowLeft, ArrowRight, Upload, FileText, Building2, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { StepIndicator } from "@/components/ui/StepIndicator";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
 import { Step1Project } from "@/components/onboarding/Step1Project";
 import { Step3Lease } from "@/components/onboarding/Step3Lease";
 import { Step3FloorPlans } from "@/components/onboarding/Step3FloorPlans";
@@ -49,7 +50,7 @@ function ConsultantModal({ onClose, onDashboard }: { onClose: () => void; onDash
         transition={{ type: "spring", stiffness: 280, damping: 24 }}
         className="w-full max-w-xl bg-surface rounded-3xl border border-border shadow-2xl overflow-hidden"
       >
-        {/* Header — white, no gradient */}
+        {/* Header */}
         <div className="relative px-6 pt-6 pb-5 border-b border-border">
           <button
             onClick={onClose}
@@ -58,32 +59,55 @@ function ConsultantModal({ onClose, onDashboard }: { onClose: () => void; onDash
             <X size={14} />
           </button>
           <h2 className="text-xl font-extrabold text-text" style={{ fontFamily: "var(--font-manrope)" }}>
-            Contact our consultants
+            Need a floor plan?
           </h2>
           <p className="text-sm text-text-muted font-body mt-1">
-            Our experts will guide you on how to proceed without a floor plan.
+            Here are your options to get started with floor plans.
           </p>
         </div>
 
-        {/* Consultants */}
-        <div className="px-6 py-5 space-y-4 max-h-[65vh] overflow-y-auto">
-          {CONSULTANTS.map((c) => (
-            <div
-              key={c.email}
-              className="flex gap-4 p-4 rounded-2xl border border-border bg-surface hover:border-primary/20 hover:shadow-card transition-all"
-            >
-              <div className="shrink-0">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={c.photo}
-                  alt={c.name}
-                  className="w-16 h-16 rounded-2xl object-cover bg-surface-2"
-                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-                />
+        <div className="px-6 py-5 space-y-5 max-h-[75vh] overflow-y-auto">
+          {/* Action points */}
+          <div className="space-y-3">
+            <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest font-mono">Your options</p>
+            <div className="flex items-start gap-4 p-4 rounded-2xl border border-border bg-surface-2/50">
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <Building2 size={16} className="text-primary" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-text" style={{ fontFamily: "var(--font-manrope)" }}>{c.name}</p>
-                <p className="text-xs text-accent font-semibold font-body mb-1">{c.title}</p>
+              <div>
+                <p className="text-sm font-bold text-text font-body">Get floor plan from your landlord</p>
+                <p className="text-xs text-text-muted font-body mt-0.5 leading-relaxed">
+                  Ask your building manager or landlord for the official floor plans they have on file. Most landlords are required to hold these documents.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 rounded-2xl border border-border bg-surface-2/50">
+              <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
+                <ShoppingCart size={16} className="text-accent" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-text font-body">Buy a floor plan</p>
+                <p className="text-xs text-text-muted font-body mt-0.5 leading-relaxed">
+                  Our team can procure a professional, scan-ready floor plan for your building. Contact our consultants below to get started.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Consultant contacts (no photos) */}
+          <div className="space-y-3">
+            <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest font-mono">Contact our experts</p>
+            {CONSULTANTS.map((c) => (
+              <div
+                key={c.email}
+                className="p-4 rounded-2xl border border-border bg-surface hover:border-primary/20 hover:shadow-card transition-all"
+              >
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div>
+                    <p className="text-sm font-bold text-text" style={{ fontFamily: "var(--font-manrope)" }}>{c.name}</p>
+                    <p className="text-xs text-accent font-semibold font-body">{c.title}</p>
+                  </div>
+                </div>
                 <p className="text-xs text-text-muted font-body leading-relaxed mb-3">{c.bio}</p>
                 <div className="flex flex-wrap gap-2">
                   <a href={`tel:${c.phone}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-primary/5 hover:text-primary text-xs font-medium text-text-muted transition-colors border border-border">
@@ -94,8 +118,8 @@ function ConsultantModal({ onClose, onDashboard }: { onClose: () => void; onDash
                   </a>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
           {/* Dashboard redirect */}
           <div className="pt-2 border-t border-border space-y-3">
@@ -130,49 +154,28 @@ const stepMeta: Record<number, { title: string; subtitle: string; illuBg: string
 
 // ─── Step Illustrations ───────────────────────────────────────────────────────
 
-function IlluStep1() {
-  return (
-    <svg viewBox="0 0 300 260" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full max-h-60">
-      <motion.rect x="85" y="70" width="130" height="140" rx="6" fill="white" stroke="#CBD5E1" strokeWidth="2"
-        initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
-        style={{ transformOrigin: "150px 210px" }} />
-      {[{ x: 100, y: 90 }, { x: 135, y: 90 }, { x: 170, y: 90 },
-        { x: 100, y: 125 }, { x: 135, y: 125 }, { x: 170, y: 125 },
-        { x: 100, y: 160 }, { x: 135, y: 160 }, { x: 170, y: 160 }].map((w, i) => (
-        <motion.rect key={i} x={w.x} y={w.y} width="22" height="20" rx="3"
-          fill="#BFDBFE" stroke="#93C5FD" strokeWidth="1"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 + i * 0.05 }} />
-      ))}
-      <motion.rect x="133" y="180" width="34" height="30" rx="3" fill="#E2E8F0" stroke="#CBD5E1" strokeWidth="1.5"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} />
-      <motion.path d="M 75 72 L 150 28 L 225 72" stroke="#1A7FA8" strokeWidth="2.5" fill="none" strokeLinejoin="round"
-        initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.6 }} />
-      <motion.rect x="60" y="12" width="180" height="24" rx="12" fill="#0A4F6E"
-        initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.8, type: "spring" }} style={{ transformOrigin: "150px 24px" }} />
-      <motion.text x="150" y="28" textAnchor="middle" fontSize="10" fill="white" fontWeight="700"
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-        Aker Brygge Tower
-      </motion.text>
-      <motion.g initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 }}>
-        <circle cx="150" cy="234" r="10" fill="#0F7663" />
-        <text x="150" y="252" textAnchor="middle" fontSize="8.5" fill="#64748B">Oslo, Norway</text>
-      </motion.g>
-    </svg>
-  );
-}
-
 // ─── Live Lease Benchmark Panel ──────────────────────────────────────────────
 
 const BENCHMARKS: Record<string, { costPerEmployee: number; areaPerEmployee: number; label: string }> = {
-  technology:    { costPerEmployee: 55000, areaPerEmployee: 12, label: "Technology" },
-  finance:       { costPerEmployee: 70000, areaPerEmployee: 14, label: "Finance & Banking" },
-  creative:      { costPerEmployee: 45000, areaPerEmployee: 10, label: "Creative & Media" },
-  manufacturing: { costPerEmployee: 35000, areaPerEmployee: 20, label: "Manufacturing" },
-  services:      { costPerEmployee: 60000, areaPerEmployee: 13, label: "Prof. Services" },
-  public:        { costPerEmployee: 42000, areaPerEmployee: 18, label: "Public Sector" },
-  other:         { costPerEmployee: 50000, areaPerEmployee: 12, label: "All Industries" },
+  "real-estate":   { costPerEmployee: 65000, areaPerEmployee: 15, label: "Real Estate & Property" },
+  "oil-gas":       { costPerEmployee: 80000, areaPerEmployee: 16, label: "Oil & Gas / Energy" },
+  construction:    { costPerEmployee: 48000, areaPerEmployee: 17, label: "Construction & Engineering" },
+  technology:      { costPerEmployee: 55000, areaPerEmployee: 12, label: "Technology / IT Services" },
+  finance:         { costPerEmployee: 70000, areaPerEmployee: 14, label: "Finance & Banking" },
+  insurance:       { costPerEmployee: 62000, areaPerEmployee: 13, label: "Insurance" },
+  public:          { costPerEmployee: 42000, areaPerEmployee: 18, label: "Public Sector / Government" },
+  healthcare:      { costPerEmployee: 50000, areaPerEmployee: 14, label: "Healthcare & Life Sciences" },
+  retail:          { costPerEmployee: 38000, areaPerEmployee: 11, label: "Retail & E-commerce" },
+  manufacturing:   { costPerEmployee: 35000, areaPerEmployee: 20, label: "Manufacturing / Industrial" },
+  shipping:        { costPerEmployee: 52000, areaPerEmployee: 16, label: "Shipping & Maritime" },
+  consulting:      { costPerEmployee: 60000, areaPerEmployee: 13, label: "Consulting / Prof. Services" },
+  education:       { costPerEmployee: 38000, areaPerEmployee: 15, label: "Education" },
+  media:           { costPerEmployee: 45000, areaPerEmployee: 11, label: "Media & Communication" },
+  hospitality:     { costPerEmployee: 32000, areaPerEmployee: 12, label: "Hospitality & Tourism" },
+  // legacy keys kept for backward compatibility
+  creative:        { costPerEmployee: 45000, areaPerEmployee: 10, label: "Creative & Media" },
+  services:        { costPerEmployee: 60000, areaPerEmployee: 13, label: "Prof. Services" },
+  other:           { costPerEmployee: 50000, areaPerEmployee: 12, label: "All Industries" },
 };
 
 function BenchmarkBar({
@@ -372,7 +375,7 @@ function IlluStep6() {
 }
 
 const ILLUSTRATIONS = [
-  <IlluStep1 key={0} />,
+  null,                  // Step 1 (create project) — right column hidden, no illustration needed
   null,                  // Step 2 uses LeaseBenchmarkPanel (rendered separately)
   null,                  // Step 3 (floor plans) has no illustration
   <IlluStep6 key={3} />, // Done illustration
@@ -390,6 +393,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { currentStep, nextStep, prevStep, setStep } = useOnboardingStore();
   const [showConsultantModal, setShowConsultantModal] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const isLastStep = currentStep === 3;
   const isStep3 = currentStep === 2;    // Add Floor Plans step
   const isLeaseStep = currentStep === 1; // Add Lease Parameters step
@@ -399,8 +403,9 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-bg flex flex-col">
       {/* Header */}
-      <header className="flex items-center px-6 py-4 border-b border-border bg-surface">
+      <header className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface">
         <Logo size="sm" />
+        <LanguageSelector />
       </header>
 
       <main className="flex-1 flex flex-col items-center px-4 py-8 sm:py-12">
@@ -528,16 +533,51 @@ export default function OnboardingPage() {
                   <label className="text-sm font-medium text-text font-body block mb-1.5 pt-5">
                     Add lease contract and additional agreements (e.g. parking, storage)
                   </label>
-                  <label className="flex flex-col items-center justify-center gap-3 py-8 rounded-xl border-2 border-dashed border-border hover:border-primary/50 hover:bg-primary/[0.02] transition-all cursor-pointer group">
+                  <label className="flex flex-col items-center justify-center gap-3 py-7 rounded-xl border-2 border-dashed border-border hover:border-primary/50 hover:bg-primary/[0.02] transition-all cursor-pointer group">
                     <div className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center group-hover:scale-110 transition-transform">
                       <Upload size={20} className="text-text-muted" />
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-medium text-text">Click to upload PDFs</p>
-                      <p className="text-xs text-text-muted mt-0.5">or drag and drop files here</p>
+                      <p className="text-xs text-text-muted mt-0.5">or drag and drop · multiple files supported</p>
                     </div>
-                    <input type="file" className="hidden" accept=".pdf" multiple />
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept=".pdf"
+                      multiple
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files ?? []);
+                        if (files.length) setUploadedFiles((prev) => [...prev, ...files]);
+                        e.target.value = "";
+                      }}
+                    />
                   </label>
+
+                  {/* Uploaded files list */}
+                  {uploadedFiles.length > 0 && (
+                    <div className="mt-3 space-y-1.5">
+                      {uploadedFiles.map((file, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-3 px-3 py-2 rounded-lg border border-border bg-surface-2/60 group"
+                        >
+                          <FileText size={14} className="text-primary shrink-0" />
+                          <span className="flex-1 text-xs font-medium text-text truncate min-w-0">{file.name}</span>
+                          <span className="text-[10px] text-text-muted font-mono shrink-0">
+                            {(file.size / 1024).toFixed(0)} KB
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setUploadedFiles((prev) => prev.filter((_, i) => i !== idx))}
+                            className="text-text-muted hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 shrink-0"
+                          >
+                            <X size={13} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Navigation buttons */}
